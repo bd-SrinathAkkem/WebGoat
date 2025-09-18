@@ -14,25 +14,23 @@ jobs:
       - name: Checkout Source
         uses: actions/checkout@v4
         
-      - name: Run Build Script
+      - name: Run Repository Analysis
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
-          curl -o run_repo_analyzer.sh https://raw.githubusercontent.com/bd-SrinathAkkem/repo-analyzer/main/.github/scripts/run_repo_analyzer.sh && chmod +x run_repo_analyzer.sh && ./run_repo_analyzer.sh "https://github.com/bd-SrinathAkkem/WebGoat" "claude-sonnet" || { echo "Error: Script failed"; exit 1; }
-          echo "Executing REPO_CLEAN_INSTALL: $REPO_CLEAN_INSTALL" && eval "$REPO_CLEAN_INSTALL"
+          curl -o run_repo_analyzer.sh https://raw.githubusercontent.com/bd-SrinathAkkem/repo-analyzer/main/.github/scripts/run_repo_analyzer.sh
+          chmod +x run_repo_analyzer.sh
+
+          source ./run_repo_analyzer.sh "https://github.com/bd-SrinathAkkem/WebGoat" "claude-sonnet" || exit 1
+
+          # Execute detected build commands
+          if [ -n "$REPO_CLEAN_INSTALL" ] && [ "$REPO_CLEAN_INSTALL" != "N/A" ]; then
+            eval "$REPO_CLEAN_INSTALL"
+          elif [ -n "$REPO_INSTALL_DEPS" ] && [ "$REPO_INSTALL_DEPS" != "N/A" ]; then
+            eval "$REPO_INSTALL_DEPS"
+            [ -n "$REPO_BUILD_PROD" ] && [ "$REPO_BUILD_PROD" != "N/A" ] && eval "$REPO_BUILD_PROD"
+          else
+            echo "No build commands found" && exit 1
+          fi
         shell: bash
-        
-      # - name: Polaris Security Scan
-      #   id: polaris-scan
-      #   uses: blackduck-inc/black-duck-security-scan@v2
-      #   with:
-      #     polaris_server_url: ${{ vars.POLARIS_URL }}
-      #     polaris_access_token: ${{ secrets.POLARIS_ACCESS_TOKEN }}
-      #     polaris_assessment_types: SAST,SCA
-      #     polaris_waitForScan: true
-      #     mark_build_status: failure
-      #     include_diagnostics: true
-      #     polaris_prComment_enabled: false
-      #     polaris_reports_sarif_create: false
-      #     polaris_upload_sarif_report: false
