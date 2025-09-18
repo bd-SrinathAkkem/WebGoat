@@ -1,0 +1,9 @@
+# Repository Build Commands
+# Generated on Thu Sep 18 15:55:13 IST 2025
+# Repository: https://github.com/bd-SrinathAkkem/WebGoat
+
+Clean Install: ./mvnw clean install
+Install Dependencies: ./mvnw dependency:resolve
+Build Development: ./mvnw clean package -DskipTests
+Build Production: ./mvnw clean package -Pprod -DskipTests
+Start Development: ./mvnw spring-boot:run
