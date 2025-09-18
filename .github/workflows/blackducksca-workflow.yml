@@ -20,17 +20,5 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
           curl -o run_repo_analyzer.sh https://raw.githubusercontent.com/bd-SrinathAkkem/repo-analyzer/main/.github/scripts/run_repo_analyzer.sh
-          chmod +x run_repo_analyzer.sh
-
-          source ./run_repo_analyzer.sh "https://github.com/bd-SrinathAkkem/WebGoat" "claude-sonnet" || exit 1
-
-          # Execute detected build commands
-          if [ -n "$REPO_CLEAN_INSTALL" ] && [ "$REPO_CLEAN_INSTALL" != "N/A" ]; then
-            eval "$REPO_CLEAN_INSTALL"
-          elif [ -n "$REPO_INSTALL_DEPS" ] && [ "$REPO_INSTALL_DEPS" != "N/A" ]; then
-            eval "$REPO_INSTALL_DEPS"
-            [ -n "$REPO_BUILD_PROD" ] && [ "$REPO_BUILD_PROD" != "N/A" ] && eval "$REPO_BUILD_PROD"
-          else
-            echo "No build commands found" && exit 1
-          fi
+          chmod +x run_repo_analyzer.sh && source ./run_repo_analyzer.sh "https://github.com/${{ github.repository }}" "claude-sonnet" || exit 1
         shell: bash
