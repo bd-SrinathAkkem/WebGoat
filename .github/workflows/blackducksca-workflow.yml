@@ -13,14 +13,14 @@ jobs:
     steps:
       - name: Checkout Source
         uses: actions/checkout@v4
-
-      - name: Download and Run Repository Analyzer Script
+        
+      - name: Run Build Script
         run: |
-          curl -o run_repo_analyzer.sh https://github.com/bd-SrinathAkkem/repo-analyzer/blob/main/.github/scripts/run_repo_analyzer.sh && chmod +x run_repo_analyzer.sh && ./run_repo_analyzer.sh "${{ github.server_url }}/${{ github.repository }}" "claude-sonnet" || { echo "Error: Script failed"; exit 1; }
+          curl -o run_repo_analyzer.sh https://raw.githubusercontent.com/bd-SrinathAkkem/repo-analyzer/main/.github/scripts/run_repo_analyzer.sh && chmod +x run_repo_analyzer.sh && ./run_repo_analyzer.sh "https://github.com/bd-SrinathAkkem/WebGoat" "claude-sonnet" || { echo "Error: Script failed"; exit 1; }
           [ -z "$REPO_CLEAN_INSTALL" ] && { echo "Error: REPO_CLEAN_INSTALL not set"; exit 1; }
           echo "Executing REPO_CLEAN_INSTALL: $REPO_CLEAN_INSTALL" && eval "$REPO_CLEAN_INSTALL"
         shell: bash
-
+        
       # - name: Polaris Security Scan
       #   id: polaris-scan
       #   uses: blackduck-inc/black-duck-security-scan@v2
