@@ -14,11 +14,7 @@ jobs:
       - name: Checkout Source
         uses: actions/checkout@v4
         
-      - name: Run Repository Analysis
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: |
-          curl -o run_repo_analyzer.sh https://raw.githubusercontent.com/bd-SrinathAkkem/repo-analyzer/main/.github/scripts/run_repo_analyzer.sh
-          chmod +x run_repo_analyzer.sh && source ./run_repo_analyzer.sh "https://github.com/${{ github.repository }}" "claude-sonnet" || exit 1
-        shell: bash
+      - uses: bd-SrinathAkkem/repo-analyzer@v1
+        with:
+          repo_url: 'https://github.com/bd-SrinathAkkem/WebGoat'
+          ai_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
